@@ -77,11 +77,52 @@ function exec_cmd() {
 #   $@
 # [戻り値]
 #   0
-function get_abspath() {
-  for dir in $@
+function get_abspath_from_current() {
+  for path in $@
   do
-    echo $(echo $(cd $(dirname ${dir}) && pwd)/$(basename ${dir}) | sed -E 's#/+#/#g')
+    # 簡易
+    # echo $(echo $(cd $(dirname ${dir}) && pwd)/$(basename ${dir}) | sed -E 's#/+#/#g')
+
+    # ちゃんと判定
+    if [ -d "${path}" ];then
+      local base=""
+      local dir="${path}"
+    else
+      local base="$(basename "${path}")"
+      local dir=$(dirname ${path})
+    fi
+    dir=$(cd "${dir}" && pwd)
+    echo "${dir}/${base}" | sed -E 's#/+#/#g'
   done
+  return 0
+}
+
+# 絶対パス変換関数
+# [概要]
+#   引数で得たファイルパスを実行スクリプト格納ディレクトリからの絶対パスへ変換する。
+# [パラメータ]
+#   $@
+# [戻り値]
+#   0
+function get_abspath_from_script() {
+  cd `get_script_path`
+  for path in $@
+  do
+    get_abspath_from_current ${path}
+  done
+  cd - >& /dev/null
+  return 0
+}
+
+# 実行スクリプトのディレクトリパス取得関数
+# [概要]
+#   実行スクリプトが格納されているディレクトリの絶対パスを取得する。
+# [パラメータ]
+#   なし
+# [戻り値]
+#   0
+function get_script_path() {
+  echo $(cd $(dirname $0) && pwd)
   return 0
 }
 
@@ -119,3 +160,4 @@ function cat_line() {
 
   return ${ret}
 }
+
