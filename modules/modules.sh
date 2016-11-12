@@ -80,7 +80,7 @@ function exec_cmd() {
 function get_abspath() {
   for dir in $@
   do
-    echo $(cd $(dirname ${dir}) && pwd | sed -E 's#^/$##')/$(basename ${dir})
+    echo $(echo $(cd $(dirname ${dir}) && pwd)/$(basename ${dir}) | sed -E 's#/+#/#g')
   done
   return 0
 }
