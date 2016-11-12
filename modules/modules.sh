@@ -49,7 +49,7 @@ function exec_cmd() {
   echo "##### 実行コマンド${exec_cmd_count}:${@}" | tee -a ${cmd_log_dir}/exec_cmd.log >&2
 
   # 文字列で渡された場合の対処(ログ名に使用するコマンド名だけを取得)
-  cmd=`echo ${1} | awk '{print $1}'`
+  local cmd=`echo ${1} | awk '{print $1}'`
   if [[ ${$} = ${BASHPID} ]];then
     # サブシェル実行ではない場合
     { { eval ${@} | tee ${cmd_log_dir}/${exec_cmd_count}.${cmd}.stdout.`date "+%Y%m%d-%H%M%S"`.${$}.log >&3;  } 2>&1 \
@@ -59,7 +59,7 @@ function exec_cmd() {
     { { eval ${@} | tee ${cmd_log_dir}/${exec_cmd_count}.${cmd}.stdout.`date "+%Y%m%d-%H%M%S"`.${$}.${BASHPID}.log >&3;  } 2>&1 \
                   | tee ${cmd_log_dir}/${exec_cmd_count}.${cmd}.stderr.`date "+%Y%m%d-%H%M%S"`.${$}.${BASHPID}.log ;     } 3>&1
   fi
-  ret=$?
+  local ret=$?
   echo "### コマンド戻り値:$ret" | tee -a ${cmd_log_dir}/exec_cmd.log >&2;
 
   # exec_cmd関数の実行回数を更新
