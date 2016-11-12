@@ -85,4 +85,37 @@ function get_abspath() {
   return 0
 }
 
+# 行指定のファイル出力関数
+# [概要]
+#   ファイルの行数を指定して、中身を標準出力へ出力する。
+# [パラメータ]
+#   $1 : ファイルパス
+#   $2 : 開始行(省略可)
+#   $3 : 終了行(省略可)
+# [戻り値]
+#   cat もしくは sed の戻り値
+function cat_line() {
 
+  # 引数解析
+  local file=$1;
+  if [[ $# = 2 ]];then
+    local start_line=$2
+    local end_line=$;
+  elif [[ $# = 3 ]];then
+    local start_line=$2;
+    local end_line=$3;
+  fi
+
+  # ファイルパスのみの場合は、catコマンドですべて出力
+  if [[ $# = 1 ]];then
+    cat ${file}
+    ret=$?
+
+  # 行数指定の場合は、sedコマンドで出力
+  else
+    sed -n "${start_line},${end_line}p" ${file}
+    ret=$?
+  fi
+
+  return ${ret}
+}
