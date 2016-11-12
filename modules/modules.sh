@@ -70,6 +70,13 @@ function exec_cmd() {
   return $ret
 }
 
+# 絶対パス変換関数
+# [概要]
+#   引数で得たファイルパスを実行カレントディレクトリからの絶対パスへ変換する。
+# [パラメータ]
+#   $@
+# [戻り値]
+#   0
 function get_abspath() {
   for dir in $@
   do
@@ -77,3 +84,5 @@ function get_abspath() {
   done
   return 0
 }
+
+
