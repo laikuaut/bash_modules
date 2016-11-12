@@ -70,3 +70,10 @@ function exec_cmd() {
   return $ret
 }
 
+function get_abspath() {
+  for dir in $@
+  do
+    echo $(cd $(dirname ${dir}) && pwd | sed -E 's#^/$##')/$(basename ${dir})
+  done
+  return 0
+}
