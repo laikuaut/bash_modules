@@ -5,11 +5,11 @@
 # 参考 : http://qiita.com/Night___/items/359ff81f358968567a45
 
 if [[ $# == 1 ]];then
-  since=$(date -d `expr ${1} - 1` +"%Y-%m-%d")
+  since=$(date -d "${1} 1 days ago" +"%Y-%m-%d")
   until=$(date -d ${1} +"%Y-%m-%d")
 else
   today=$(date +"%Y%m%d")
-  since=$(date -d `expr ${today} - 1` +"%Y-%m-%d")
+  since=$(date -d "${today} 1 days ago" +"%Y-%m-%d")
   until=$(date -d ${today} +"%Y-%m-%d")
 fi
 
