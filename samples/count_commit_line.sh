@@ -24,11 +24,13 @@ do
   pushd ${line} >& /dev/null
   log_file=${log_dir}/${line#./}.log
   :> ${log_file}
-  echo -n "# ${line#./}" | tee -a ${log_file}
-  echo -n " : "
+  echo -n "# ${line#./}" | tee -a ${log_file} | tee -a ${all_count_file}
+  echo -n " : " | tee -a ${all_count_file}
   echo >> ${log_file}
-#  echo ${git_log_cmd}
   git log --numstat --date=short --pretty="[%cd] [%h] [%an] %s" --author='laikuaut' --since=${since} --until=${until} --no-merges >> ${log_file}
   git log --numstat --date=short --pretty="[%cd] [%h] [%an] %s" --author='laikuaut' --since=${since} --until=${until} --no-merges | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("%d (+%d, -%d)\n", plus+minus, plus, minus)}' | tee -a ${all_count_file}
   popd >& /dev/null
 done
+echo -n '合計 : ' | tee -a ${all_count_file}
+cat ${all_count_file} | sed -E 's#^\#.+\(\+([0-9]+), \-([0-9]+)\)#\1\t\2#' | awk '{plus+=$1; minus+=$2} END {printf("%d (+%d, -%d)", plus+minus, plus, minus)}' | tee -a ${all_count_file}
+echo | tee -a ${all_count_file}
