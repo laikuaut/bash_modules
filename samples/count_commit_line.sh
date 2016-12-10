@@ -42,7 +42,7 @@ do
             --since=${since} \
             --until=${until} \
             --no-merges \
-                | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("%d (+%d, -%d)\n", plus+minus, plus, minus)}' \
+                | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("%d, %d (+%d, -%d)\n", plus+minus, plus-minus, plus, minus)}' \
                 | tee -a ${all_count_file}
     popd >& /dev/null
 done
@@ -50,7 +50,7 @@ done
 echo -n '合計 : ' | tee -a ${all_count_file}
 cat ${all_count_file} \
     | sed -E 's#^\#.+\(\+([0-9]+), \-([0-9]+)\)#\1\t\2#' \
-    | awk '{plus+=$1; minus+=$2} END {printf("%d (+%d, -%d)", plus+minus, plus, minus)}' \
+    | awk '{plus+=$1; minus+=$2} END {printf("%d, %d (+%d, -%d)", plus+minus, plus-minus, plus, minus)}' \
     | tee -a ${all_count_file}
 echo | tee -a ${all_count_file}
 
