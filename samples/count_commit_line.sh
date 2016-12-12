@@ -42,6 +42,7 @@ do
             --since=${since} \
             --until=${until} \
             --no-merges \
+                | grep -v ".txt$" \
                 | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("%d, %d (+%d, -%d)\n", plus+minus, plus-minus, plus, minus)}' \
                 | tee -a ${all_count_file}
     popd >& /dev/null
